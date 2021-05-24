@@ -2,6 +2,7 @@
 public class Vacuna {
 
 	RangoDeAplicacion rangoDeAplicacion;
+	Date fechaExpiracion;
 	int temperatura;
 
 	public Vacuna(RangoDeAplicacion r, int t) {
