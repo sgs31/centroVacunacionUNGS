@@ -1,3 +1,5 @@
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class CentroVacunacion {
@@ -6,9 +8,16 @@ public class CentroVacunacion {
 	int capacidadVacunacionDiaria;
 	AlmacenVacunas almacenVacunas;
 	PersonasRegistradas personasRegistradas;
+	Map<Fecha, LinkedList<Persona>> calendarioVacunacion;
 
 	public CentroVacunacion(String nombreCentro, int capacidadVacunacionDiaria) {
-
+		if(capacidadVacunacionDiaria < 0) {
+			throw new RuntimeException("La capacidad diaria de vacunacion debe ser mayor a 0.");
+		}
+		this.nombreCentro = nombreCentro;
+		this.capacidadVacunacionDiaria = capacidadVacunacionDiaria;
+		this.almacenVacunas = new AlmacenVacunas();
+		this.personasRegistradas = new PersonasRegistradas();
 	}
 
 	/**
@@ -19,14 +28,14 @@ public class CentroVacunacion {
 	 * utilizadas.
 	 */
 	public void ingresarVacunas(String nombreVacuna, int cantidad, Fecha fechaIngreso) {
-
+		almacenVacunas.almacenarVacunas(nombreVacuna, cantidad, fechaIngreso);
 	}
 
 	/**
 	 * total de vacunas disponibles no vencidas sin distinción por tipo.
 	 */
 	public int vacunasDisponibles() {
-
+		return almacenVacunas.getVacunasDisponibles();
 	}
 
 	/**
@@ -34,7 +43,7 @@ public class CentroVacunacion {
 	 * especificado.
 	 */
 	public int vacunasDisponibles(String nombreVacuna) {
-
+		return almacenVacunas.getVacunasDisponibles(nombreVacuna);
 	}
 
 	/**
@@ -43,7 +52,7 @@ public class CentroVacunacion {
 	 * ya fue vacunada, también debe generar una excepción.
 	 */
 	public void inscribirPersona(int dni, Fecha nacimiento, boolean tienePadecimientos, boolean esEmpleadoSalud) {
-
+		personasRegistradas.registrarPersona(dni, nacimiento, tienePadecimientos, esEmpleadoSalud);
 	}
 
 	/**
@@ -52,7 +61,7 @@ public class CentroVacunacion {
 	 * devolver una lista vacía.
 	 */
 	public List<Integer> listaDeEspera() {
-
+		return personasRegistradas.getPersonasEnEspera();
 	}
 
 	/**
@@ -70,7 +79,7 @@ public class CentroVacunacion {
 	 *
 	 */
 	public void generarTurnos(Fecha fechaInicial) {
-
+		
 	}
 
 	/**
@@ -80,7 +89,14 @@ public class CentroVacunacion {
 	 * capacidad por día de la ungs.
 	 */
 	public List<Integer> turnosConFecha(Fecha fecha) {
-
+		List<Integer> personas = new LinkedList<>();
+		if(!calendarioVacunacion.containsKey(fecha)) {
+			return personas;
+		}
+		for(Persona persona : calendarioVacunacion.get(fecha)) {
+			personas.add(persona.getDni());
+		}
+		return personas;
 	}
 
 	/**
@@ -90,7 +106,7 @@ public class CentroVacunacion {
 	 * - Si no está inscripto o no tiene turno ese día, se genera una Excepcion.
 	 */
 	public void vacunarInscripto(int dni, Fecha fechaVacunacion) {
-
+		
 	}
 
 	/**
@@ -106,7 +122,7 @@ public class CentroVacunacion {
 	 * cantidad de vacunas vencidas conocidas hasta el momento.
 	 */
 	public Map<String, Integer> reporteVacunasVencidas() {
-
+		return almacenVacunas.getVacunasVencidas();
 	}
 
 }
