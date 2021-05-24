@@ -2,12 +2,13 @@
 public class Vacuna {
 
 	RangoDeAplicacion rangoDeAplicacion;
-	Date fechaExpiracion;
+	Fecha fechaIngreso;
 	int temperatura;
-
-	public Vacuna(RangoDeAplicacion r, int t) {
+	
+	public Vacuna(RangoDeAplicacion r, int t, Fecha f) {
 		this.rangoDeAplicacion = r;
 		this.temperatura = t;
+		this.fechaIngreso = f;
 	}
 
 	public RangoDeAplicacion getRangoDeAplicacion() {
@@ -17,4 +18,5 @@ public class Vacuna {
 	public int getTemperaturaAlmacenamiento() {
 		return this.temperatura;
 	}
+	
 }

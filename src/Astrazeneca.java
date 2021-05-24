@@ -1,6 +1,6 @@
 
-public class Astrazeneca extends Vacuna {
-	public Astrazeneca() {
-		super(RangoDeAplicacion.TODO_PUBLICO, 3);
+public class Astrazeneca extends VacunasA3Grados {
+	public Astrazeneca(Fecha f) {
+		super(RangoDeAplicacion.TODO_PUBLICO, 3, f);
 	}
 }
