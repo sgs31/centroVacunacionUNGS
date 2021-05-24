@@ -1,11 +1,11 @@
 
 public class Persona {
-	
+
 	int dni;
 	int edad;
 	boolean trabajadorSalud;
 	boolean enfermedadPreexistente;
-	
+
 	public Persona(int dni, int edad, boolean trabajadorSalud, boolean enfermedadPreexistente) {
 		this.dni = dni;
 		this.edad = edad;
@@ -14,7 +14,7 @@ public class Persona {
 	}
 
 	public OrdenDePrioridad obtenerOrdenDePrioridad() {
-		
+
 	}
 
 }
