@@ -1,5 +1,5 @@
 
-public  class Vacuna {
+public abstract class Vacuna {
 
 	RangoDeAplicacion rangoDeAplicacion;
 	Fecha fechaIngreso;
@@ -18,6 +18,9 @@ public  class Vacuna {
 	public  int getTemperaturaAlmacenamiento() {
 		return this.temperatura;
 	}
+	public abstract boolean estaVencida();
 	
-	
+	public Fecha getFechaIngreso() {
+		return fechaIngreso;
+	}
 }

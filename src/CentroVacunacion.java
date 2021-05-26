@@ -29,6 +29,7 @@ public class CentroVacunacion {
 	 */
 	public void ingresarVacunas(String nombreVacuna, int cantidad, Fecha fechaIngreso) {
 		almacenVacunas.almacenarVacunas(nombreVacuna, cantidad, fechaIngreso);
+		
 	}
 
 	/**
@@ -79,7 +80,7 @@ public class CentroVacunacion {
 	 *
 	 */
 	public void generarTurnos(Fecha fechaInicial) {
-		
+			
 	}
 
 	/**
@@ -113,7 +114,8 @@ public class CentroVacunacion {
 	 * Devuelve un Diccionario donde - la clave es el dni de las personas vacunadas
 	 * - Y, el valor es el nombre de la vacuna aplicada.
 	 */
-	public Map<Integer, String> reporteVacunacion() {
+	public Map<String, Integer> reporteVacunacion() {
+		return almacenVacunas.getVacunasVencidas();
 
 	}
 
