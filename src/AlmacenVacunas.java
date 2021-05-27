@@ -3,38 +3,26 @@ import java.util.LinkedList;
 import java.util.Map;
 
 public class AlmacenVacunas {
+	
 	private Map<String, Integer> vacunasVencidas;
-	private Map <String, LinkedList<Vacuna>> vacunas;
+	private Map <RangoDeAplicacion, LinkedList<Vacuna>> vacunas;
 	private Map <Integer, Vacuna> vacunasReservadas;
+	
 	public AlmacenVacunas() {
 		this.vacunasVencidas = new HashMap<String,Integer>();
-		this.vacunas = new HashMap<String, LinkedList<Vacuna>>();
-		vacunas.put("pfizer",new LinkedList<Vacuna>());
-		vacunas.put("moderna",new LinkedList<Vacuna>());
-		vacunas.put("sputnik",new LinkedList<Vacuna>());
-		vacunas.put("sinopharm",new LinkedList<Vacuna>());
-		vacunas.put("astrazeneca",new LinkedList<Vacuna>());
+		this.vacunas = new HashMap<RangoDeAplicacion, LinkedList<Vacuna>>();
+		vacunas.put(RangoDeAplicacion.MAYOR_SESENTA, new LinkedList<Vacuna>());
+		vacunas.put(RangoDeAplicacion.TODO_PUBLICO, new LinkedList<Vacuna>());	
 	}
 	
 	public void almacenarVacunas(String nombreVacuna, int cantidad, Fecha fechaIngreso) {
 		String nombVacuna = nombreVacuna.toLowerCase();
-		if (vacunas.containsKey(nombVacuna)) {
-			LinkedList<Vacuna> taux = vacunas.get(nombVacuna);
+		if (vacunaValida(nombVacuna)) {
 			if (cantidad > 0) {
-				if (nombreVacuna == "pfizer") {
-					agregarVacuna(new Pfizer(fechaIngreso), taux, cantidad);
-				}
-				if (nombreVacuna == "moderna") {
-					agregarVacuna(new Moderna(fechaIngreso), taux, cantidad);
-				}
-				if (nombreVacuna == "sputnik") {
-					agregarVacuna(new Sputnik(fechaIngreso), taux, cantidad);
-				}
-				if (nombreVacuna == "sinopharm") {
-					agregarVacuna(new Sinopharm(fechaIngreso), taux, cantidad);
-				}
-				if (nombreVacuna == "astrazeneca") {
-					agregarVacuna(new Astrazeneca(fechaIngreso), taux, cantidad);
+				if (nombreVacuna.equals("pfizer") || nombreVacuna.equals("moderna")) {
+					agregarVacuna(new VacunasMenos18(nombreVacuna, fechaIngreso), cantidad);
+				}else {
+					agregarVacuna(new VacunasA3Grados(nombreVacuna,fechaIngreso), cantidad);
 				}
 			} else {
 				throw new RuntimeException("La cantidad de vacunas no puede ser negativa");
@@ -44,8 +32,9 @@ public class AlmacenVacunas {
 		}	
 	}
 	
-	private void agregarVacuna(Vacuna vacuna, LinkedList<Vacuna> listaVacuna, int cantidad) {
-		if(vacuna.estaVencida()==false) {
+	private void agregarVacuna(Vacuna vacuna, int cantidad) {
+		LinkedList<Vacuna> listaVacuna = vacunas.get(vacuna.getRangoDeAplicacion());
+		if(!vacuna.estaVencida()) {
 			for (int i = 0; i < cantidad; i++) {
 					listaVacuna.add(vacuna);
 			}
@@ -83,6 +72,14 @@ public class AlmacenVacunas {
 	
 	public Map<String, Integer> getVacunasVencidas() {
 		return vacunasVencidas;
+	}
+	
+	private boolean vacunaValida(String n) {
+		boolean ret = false;
+		if(n.equals("pfizer") || n.equals("moderna") || n.equals("sputnik") || n.equals("astrazeneca") || n.equals("sinopharm")) {
+			ret = true;
+		}
+		return ret; 
 	}
 
 }

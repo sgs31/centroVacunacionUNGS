@@ -83,7 +83,9 @@ public class CentroVacunacion {
 	 *
 	 */
 	public void generarTurnos(Fecha fechaInicial) {
-		
+		if(fechaInicial.anterior(Fecha.hoy())) {
+			throw new RuntimeException("La fecha inicial");
+		}
 	}
 	
 	private void eliminarTurnosVencidos() {

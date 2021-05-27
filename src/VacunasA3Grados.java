@@ -1,15 +1,19 @@
 
-public class VacunasA3Grados extends Vacuna{
-		
-		
-	public VacunasA3Grados(RangoDeAplicacion r, int t, Fecha f) {
-		super(t,f);
-		
-		// TODO Auto-generated constructor stub
+public class VacunasA3Grados extends Vacuna {
+
+	public VacunasA3Grados(String n, Fecha f) {
+		super(n, 3, f);
 	}
-	@Override
+
+	public RangoDeAplicacion getRangoDeAplicacion() {
+		if (super.getNombreVacuna().equals("sputnik")) {
+			return RangoDeAplicacion.MAYOR_SESENTA;
+		} else {
+			return RangoDeAplicacion.TODO_PUBLICO;
+		}
+	}
+
 	public boolean estaVencida() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }

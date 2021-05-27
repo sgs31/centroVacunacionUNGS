@@ -1,9 +1,31 @@
 
-public abstract class VacunasMenos18 extends Vacuna {
+public class VacunasMenos18 extends Vacuna {
 
-	public VacunasMenos18(RangoDeAplicacion r, int t, Fecha f) {
-		super(t,f);
-		// TODO Auto-generated constructor stub
+	public VacunasMenos18(String n, Fecha f) {
+		super(n, -18, f);
 	}
-	public abstract boolean estaVencida();
+
+	public RangoDeAplicacion getRangoDeAplicacion() {
+		if (super.getNombreVacuna().equals("pfizer")) {
+			return RangoDeAplicacion.MAYOR_SESENTA;
+		} else {
+			return RangoDeAplicacion.TODO_PUBLICO;
+		}
+	}
+
+	public boolean estaVencida() {
+		Fecha nuevaFecha = super.getFechaIngreso();
+		if (super.getNombreVacuna().equals("pfizer")) {
+			for (int i = 0; i <= 30; i++) {
+				nuevaFecha.avanzarUnDia();
+			}
+		} else {
+			for (int i = 0; i <= 60; i++) {
+				nuevaFecha.avanzarUnDia();
+			}
+		}
+
+		return nuevaFecha.posterior(Fecha.hoy());
+	}
+
 }
