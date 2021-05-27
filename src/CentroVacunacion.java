@@ -1,23 +1,26 @@
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class CentroVacunacion {
 
-	String nombreCentro;
-	int capacidadVacunacionDiaria;
-	AlmacenVacunas almacenVacunas;
-	PersonasRegistradas personasRegistradas;
-	Map<Fecha, LinkedList<Persona>> calendarioVacunacion;
+	private String nombreCentro;
+	private int capacidadVacunacionDiaria;
+	private AlmacenVacunas almacenVacunas;
+	private PersonasRegistradas personasRegistradas;
+	private Map<Fecha, LinkedList<Persona>> calendarioVacunacion;
 
 	public CentroVacunacion(String nombreCentro, int capacidadVacunacionDiaria) {
-		if(capacidadVacunacionDiaria < 0) {
+		if (capacidadVacunacionDiaria < 0) {
 			throw new RuntimeException("La capacidad diaria de vacunacion debe ser mayor a 0.");
 		}
 		this.nombreCentro = nombreCentro;
 		this.capacidadVacunacionDiaria = capacidadVacunacionDiaria;
 		this.almacenVacunas = new AlmacenVacunas();
 		this.personasRegistradas = new PersonasRegistradas();
+		this.calendarioVacunacion = new HashMap<Fecha, LinkedList<Persona>>();
 	}
 
 	/**
@@ -29,7 +32,7 @@ public class CentroVacunacion {
 	 */
 	public void ingresarVacunas(String nombreVacuna, int cantidad, Fecha fechaIngreso) {
 		almacenVacunas.almacenarVacunas(nombreVacuna, cantidad, fechaIngreso);
-		
+
 	}
 
 	/**
@@ -80,7 +83,16 @@ public class CentroVacunacion {
 	 *
 	 */
 	public void generarTurnos(Fecha fechaInicial) {
-			
+		
+	}
+	
+	private void eliminarTurnosVencidos() {
+		Set<Fecha> fechasVacunacion = calendarioVacunacion.keySet();
+		for (Fecha fecha : fechasVacunacion) {
+			if(fecha.anterior(Fecha.hoy()) && calendarioVacunacion.get(fecha)!=null) {
+				calendarioVacunacion.remove(fecha);
+			}
+		}
 	}
 
 	/**
@@ -90,11 +102,11 @@ public class CentroVacunacion {
 	 * capacidad por día de la ungs.
 	 */
 	public List<Integer> turnosConFecha(Fecha fecha) {
-		List<Integer> personas = new LinkedList<>();
-		if(!calendarioVacunacion.containsKey(fecha)) {
+		List<Integer> personas = new LinkedList<Integer>();
+		if (calendarioVacunacion.get(fecha).size() == 0 || !calendarioVacunacion.containsKey(fecha)) {
 			return personas;
 		}
-		for(Persona persona : calendarioVacunacion.get(fecha)) {
+		for (Persona persona : calendarioVacunacion.get(fecha)) {
 			personas.add(persona.getDni());
 		}
 		return personas;
@@ -107,16 +119,15 @@ public class CentroVacunacion {
 	 * - Si no está inscripto o no tiene turno ese día, se genera una Excepcion.
 	 */
 	public void vacunarInscripto(int dni, Fecha fechaVacunacion) {
-		
+
 	}
 
 	/**
 	 * Devuelve un Diccionario donde - la clave es el dni de las personas vacunadas
 	 * - Y, el valor es el nombre de la vacuna aplicada.
 	 */
-	public Map<String, Integer> reporteVacunacion() {
-		return almacenVacunas.getVacunasVencidas();
-
+	public Map<Integer, String> reporteVacunacion() {
+		return personasRegistradas.getPersonasVacunadas();
 	}
 
 	/**

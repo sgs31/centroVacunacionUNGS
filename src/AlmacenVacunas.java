@@ -5,7 +5,7 @@ import java.util.Map;
 public class AlmacenVacunas {
 	private Map<String, Integer> vacunasVencidas;
 	private Map <String, LinkedList<Vacuna>> vacunas;
-	private Map <String, LinkedList<Vacuna>> vacunasNoUsable;
+	private Map <Integer, Vacuna> vacunasReservadas;
 	public AlmacenVacunas() {
 		this.vacunasVencidas = new HashMap<String,Integer>();
 		this.vacunas = new HashMap<String, LinkedList<Vacuna>>();
@@ -76,10 +76,9 @@ public class AlmacenVacunas {
 		}
 	}
 	
-	public void asignarVacuna(String nombreVacuna) {
-		String nombVacuna = nombreVacuna.toLowerCase();
-			LinkedList<Vacuna> taux = vacunasNoUsable.get(nombVacuna);
-                taux.add(vacunas.get(nombVacuna).removeFirst());
+	public void asignarVacuna(Integer dni, String vacuna) {
+			String aux = vacuna.toLowerCase();
+			vacunasReservadas.put(dni, vacunas.get(aux).removeFirst());
 	}
 	
 	public Map<String, Integer> getVacunasVencidas() {
