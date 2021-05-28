@@ -2,6 +2,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class PersonasRegistradas {
 	
@@ -22,9 +23,9 @@ public class PersonasRegistradas {
 
 	}
 
-	public List<Integer> getPersonasEnEspera() {
-		List<Integer> personasEnEspera = (List<Integer>) personasRegistradas.keySet();
-		return personasEnEspera;
+	public Set<Integer> getPersonasEnEspera() {
+		//List<Integer> personasEnEspera = (List<Integer>) personasRegistradas.keySet();
+		return /*personasEnEspera;*/personasRegistradas.keySet();
 	}
 
 	public Map<Integer, String> getPersonasVacunadas() {

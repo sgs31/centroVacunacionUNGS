@@ -64,7 +64,7 @@ public class CentroVacunacion {
 	 * que no tienen turno asignado. Si no quedan inscriptos sin vacunas debe
 	 * devolver una lista vacía.
 	 */
-	public List<Integer> listaDeEspera() {
+	public Set<Integer> listaDeEspera() {
 		return personasRegistradas.getPersonasEnEspera();
 	}
 

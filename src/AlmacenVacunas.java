@@ -67,8 +67,8 @@ public class AlmacenVacunas {
 	}
 
 	public void asignarVacuna(Integer dni, String vacuna) {
-		String aux = vacuna.toLowerCase();
-		vacunasReservadas.put(dni, vacunas.get(aux).removeFirst());
+		String nombVacuna = vacuna.toLowerCase();
+		vacunasReservadas.put(dni, vacunas.get(nombVacuna).removeFirst());
 	}
 
 	public void restaurarVacunas(LinkedList<Persona> personas) {
