@@ -83,15 +83,25 @@ public class CentroVacunacion {
 	 *
 	 */
 	public void generarTurnos(Fecha fechaInicial) {
-		if(fechaInicial.anterior(Fecha.hoy())) {
-			throw new RuntimeException("La fecha inicial");
+		Fecha fechaAux = fechaInicial;
+		if(fechaAux.anterior(Fecha.hoy())) {
+			throw new RuntimeException("La fecha que ingreso es invalida.");
 		}
+		if(fechaAux.equals(Fecha.hoy()) && calendarioVacunacion.get(fechaAux).size()==capacidadVacunacionDiaria) {
+			fechaAux.avanzarUnDia();
+		}
+		
 	}
 	
+//	private <Persona> getPersonasRegistradasSegunPrioridad(OrdenDePrioridad o){
+//		
+//	}
+
 	private void eliminarTurnosVencidos() {
 		Set<Fecha> fechasVacunacion = calendarioVacunacion.keySet();
 		for (Fecha fecha : fechasVacunacion) {
-			if(fecha.anterior(Fecha.hoy()) && calendarioVacunacion.get(fecha)!=null) {
+			if (calendarioVacunacion.get(fecha) != null && fecha.anterior(Fecha.hoy())) {
+				almacenVacunas.restaurarVacunas(calendarioVacunacion.get(fecha));
 				calendarioVacunacion.remove(fecha);
 			}
 		}
