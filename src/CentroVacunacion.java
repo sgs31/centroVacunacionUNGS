@@ -32,7 +32,7 @@ public class CentroVacunacion {
 	 */
 	public void ingresarVacunas(String nombreVacuna, int cantidad, Fecha fechaIngreso) {
 		almacenVacunas.almacenarVacunas(nombreVacuna, cantidad, fechaIngreso);
-
+		
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class CentroVacunacion {
 	 * que no tienen turno asignado. Si no quedan inscriptos sin vacunas debe
 	 * devolver una lista vacía.
 	 */
-	public Set<Integer> listaDeEspera() {
+	public LinkedList<Integer> listaDeEspera() {
 		return personasRegistradas.getPersonasEnEspera();
 	}
 
@@ -84,11 +84,25 @@ public class CentroVacunacion {
 	 */
 	public void generarTurnos(Fecha fechaInicial) {
 		Fecha fechaAux = fechaInicial;
+		LinkedList<Persona> personas = calendarioVacunacion.get(fechaAux);
 		if(fechaAux.anterior(Fecha.hoy())) {
 			throw new RuntimeException("La fecha que ingreso es invalida.");
 		}
-		if(fechaAux.equals(Fecha.hoy()) && calendarioVacunacion.get(fechaAux).size()==capacidadVacunacionDiaria) {
+		if(fechaAux.equals(Fecha.hoy()) && personas.size()==capacidadVacunacionDiaria) {
 			fechaAux.avanzarUnDia();
+			almacenVacunas.vacunasVencida(nombreCentro);
+			for(int i=0; i<capacidadVacunacionDiaria; i++) {
+				for(int j=0;j<personas.size();j++) {
+					OrdenDePrioridad ordenPrioridad= personas.get(i).obtenerOrdenDePrioridad();
+					if(ordenPrioridad==OrdenDePrioridad.PRIMERO || ordenPrioridad==OrdenDePrioridad.TERCERO ||
+							ordenPrioridad==OrdenDePrioridad.CUARTO) {
+						almacenVacunas.asignarVacuna(personas.get(i).getDni(),almacenVacunas.getVacuna(ordenPrioridad));
+					}
+					else if(ordenPrioridad==OrdenDePrioridad.SEGUNDO) {
+						almacenVacunas.asignarVacuna(personas.get(i).getDni(),almacenVacunas.getVacuna(ordenPrioridad));
+					}
+				}
+			}
 		}
 		
 	}

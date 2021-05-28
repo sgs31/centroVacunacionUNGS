@@ -85,7 +85,20 @@ public class AlmacenVacunas {
 	public Map<String, Integer> getVacunasVencidas() {
 		return vacunasVencidas;
 	}
-
+	//metodo que por ahi sirve
+	public String getVacuna(OrdenDePrioridad o) {
+		LinkedList <Vacuna> todoPublico = vacunas.get(RangoDeAplicacion.TODO_PUBLICO);
+		LinkedList <Vacuna> mayores60 = vacunas.get(RangoDeAplicacion.MAYOR_SESENTA);
+		String vacuna;
+		if(o==OrdenDePrioridad.SEGUNDO) {
+			vacuna =mayores60.getFirst().getNombreVacuna();
+		}
+		else {
+			vacuna = todoPublico.getFirst().getNombreVacuna();
+		}
+		return vacuna;
+	}
+	
 	private boolean vacunaValida(String n) {
 		boolean ret = false;
 		if (n.equals("pfizer") || n.equals("moderna") || n.equals("sputnik") || n.equals("astrazeneca")
