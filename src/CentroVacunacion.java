@@ -64,7 +64,7 @@ public class CentroVacunacion {
 	 * que no tienen turno asignado. Si no quedan inscriptos sin vacunas debe
 	 * devolver una lista vacía.
 	 */
-	public LinkedList<Integer> listaDeEspera() {
+	public List<Integer> listaDeEspera() {
 		return personasRegistradas.getPersonasEnEspera();
 	}
 
@@ -85,6 +85,7 @@ public class CentroVacunacion {
 	public void generarTurnos(Fecha fechaInicial) {
 		Fecha fechaAux = fechaInicial;
 		LinkedList<Persona> personas = calendarioVacunacion.get(fechaAux);
+		eliminarTurnosVencidos();
 		if(fechaAux.anterior(Fecha.hoy())) {
 			throw new RuntimeException("La fecha que ingreso es invalida.");
 		}
@@ -145,7 +146,7 @@ public class CentroVacunacion {
 	 * - Si no está inscripto o no tiene turno ese día, se genera una Excepcion.
 	 */
 	public void vacunarInscripto(int dni, Fecha fechaVacunacion) {
-
+		
 	}
 
 	/**

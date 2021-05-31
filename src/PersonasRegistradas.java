@@ -31,7 +31,7 @@ public class PersonasRegistradas {
 		}
 
 	}
-	public LinkedList<Integer> getPersonasEnEspera() {
+	public List<Integer> getPersonasEnEspera() {
 		LinkedList <Integer> taux = new LinkedList<Integer>();
 		//List<Integer> personasEnEspera = (List<Integer>) personasRegistradas.keySet();
 		for (OrdenDePrioridad p: personasRegistradas.keySet() ) {
