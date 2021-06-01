@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -18,8 +19,10 @@ public class prueba {
 		
 		LinkedList<String> aux = asd.get(1);
 		
-		for(String a : aux) {
-			System.out.println(a);
+		Iterator<String> taux = aux.iterator();
+		while(taux.hasNext()) {
+			taux.next();
+			System.out.println(taux.next());
 		}
 		
 		

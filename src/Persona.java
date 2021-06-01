@@ -14,22 +14,38 @@ public class Persona {
 	}
 
 	public OrdenDePrioridad obtenerOrdenDePrioridad() {
-		if(trabajadorSalud) {
+		if (trabajadorSalud) {
 			return OrdenDePrioridad.PRIMERO;
 		}
-		if(Fecha.diferenciaAnios(edad, Fecha.hoy()) >=60) {
+		if (Fecha.diferenciaAnios(edad, Fecha.hoy()) >= 60) {
 			return OrdenDePrioridad.SEGUNDO;
 		}
-		if(enfermedadPreexistente) {
+		if (enfermedadPreexistente) {
 			return OrdenDePrioridad.TERCERO;
 		}
 		return OrdenDePrioridad.CUARTO;
 	}
-	
+
+	public RangoDeAplicacion obtenerRangoDeAplicacion() {
+		if (obtenerOrdenDePrioridad() == OrdenDePrioridad.PRIMERO) {
+			return RangoDeAplicacion.TODO_PUBLICO;
+		}
+		if (obtenerOrdenDePrioridad() == OrdenDePrioridad.SEGUNDO) {
+			return RangoDeAplicacion.MAYOR_SESENTA;
+		}
+		if (obtenerOrdenDePrioridad() == OrdenDePrioridad.TERCERO) {
+			return RangoDeAplicacion.TODO_PUBLICO;
+		}
+		if (obtenerOrdenDePrioridad() == OrdenDePrioridad.CUARTO) {
+			return RangoDeAplicacion.TODO_PUBLICO;
+		}
+		return null;
+	}
+
 	public int getDni() {
 		return dni;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -64,12 +80,11 @@ public class Persona {
 		return true;
 	}
 
-	@Override
-	public String toString() {
-
-		return "Persona [dni=" + dni + ", edad=" + edad + ", trabajadorSalud=" + trabajadorSalud
-				+ ", enfermedadPreexistente=" + enfermedadPreexistente + "]";
-	}
-	
+//	@Override
+//	public String toString() {
+//
+//		return "Persona [dni=" + dni + ", edad=" + edad + ", trabajadorSalud=" + trabajadorSalud
+//				+ ", enfermedadPreexistente=" + enfermedadPreexistente + "]";
+//	}
 
 }

@@ -17,9 +17,9 @@ public class AlmacenVacunas {
 		vacunas.put(RangoDeAplicacion.MAYOR_SESENTA, new LinkedList<Vacuna>());
 		vacunas.put(RangoDeAplicacion.TODO_PUBLICO, new LinkedList<Vacuna>());
 	}
-
+	
 	public void almacenarVacunas(String nombreVacuna, int cantidad, Fecha fechaIngreso) {
-		
+
 		if (vacunaValida(nombreVacuna)) {
 			if (cantidad >= 1) {
 				if (nombreVacuna.equals("Pfizer") || nombreVacuna.equals("Moderna")) {
@@ -34,14 +34,14 @@ public class AlmacenVacunas {
 			throw new RuntimeException("La vacuna con esa marca no se puede almacenar.");
 		}
 	}
-
+	
 	private void agregarVacuna(Vacuna vacuna, int cantidad) {
 		LinkedList<Vacuna> listaVacuna = vacunas.get(vacuna.getRangoDeAplicacion());
-			for (int i = 0; i < cantidad; i++) {
-				listaVacuna.add(vacuna);
-			}
-		} 
-
+		for (int i = 0; i < cantidad; i++) {
+			listaVacuna.add(vacuna);
+		}
+	}
+	
 	public int getVacunasDisponibles() {
 		int total = 0;
 		Set<RangoDeAplicacion> r = vacunas.keySet();
@@ -50,67 +50,51 @@ public class AlmacenVacunas {
 		}
 		return total;
 	}
-
+	
 	public int getVacunasDisponibles(String vacuna) {
-		
+		int total = 0;
 		if (vacunaValida(vacuna)) {
 			if (vacuna.equals("Pfizer") || vacuna.equals("Sputnik")) {
-				return vacunas.get(RangoDeAplicacion.MAYOR_SESENTA).size();
+				for(Vacuna vac : vacunas.get(RangoDeAplicacion.MAYOR_SESENTA)) {
+					if(vac.getNombreVacuna().equals(vacuna)) {
+						total+=1;
+					}
+				}
 			} else {
-				return vacunas.get(RangoDeAplicacion.TODO_PUBLICO).size();
+				for(Vacuna vac : vacunas.get(RangoDeAplicacion.TODO_PUBLICO)) {
+					if(vac.getNombreVacuna().equals(vacuna)) {
+						total+=1;
+					}
+				}
 			}
+		return total;
 		} else {
 			throw new RuntimeException("No hay esa vacuna.");
 		}
 	}
 
-	// cambiar nombre metodo ---!
-	private void agregarVacunaVencida(String nombreVacuna) {
-		
-		if (vacunas.containsKey(nombreVacuna)) {
-			Integer aux = vacunasVencidas.get(nombreVacuna) + 1;
-			vacunasVencidas.replace(nombreVacuna, vacunasVencidas.get(nombreVacuna), aux);
-			vacunas.get(nombreVacuna).remove();
+	
+	private void agregarVacunaVencida(Vacuna vac) {
+		String nVac = vac.getNombreVacuna();
+		if (vacunasVencidas.get(nVac) == null) {
+			vacunasVencidas.put(nVac, 1);
+		} else {
+			Integer aux = vacunasVencidas.get(nVac) + 1;
+			vacunasVencidas.replace(nVac, vacunasVencidas.get(nVac), aux);
+			vacunas.get(vac.getRangoDeAplicacion()).remove(vac);
 		}
 	}
-	
+
 	public void verificarVacunasVencidas() {
-		LinkedList <Vacuna> vacunas60 = vacunas.get(RangoDeAplicacion.MAYOR_SESENTA);
-		LinkedList <Vacuna> vacunasTodos = vacunas.get(RangoDeAplicacion.TODO_PUBLICO);
-		//Set<RangoDeAplicacion> r = vacunas.keySet();
-		Iterator<Vacuna> a = vacunas60.iterator();
-		Iterator<Vacuna> b = vacunasTodos.iterator();
-		while(a.hasNext()) {
-			if(a.next().estaVencida()) {
-				if(a.next().getNombreVacuna()==null) {
-					vacunasVencidas.put(a.next().getNombreVacuna(),1);
-				}
-				else {
-					agregarVacunaVencida(a.next().getNombreVacuna());
+		Set<RangoDeAplicacion> r = vacunas.keySet();
+		for (RangoDeAplicacion rangoApp : r) {
+			LinkedList<Vacuna> vacunasConRangoApp = vacunas.get(rangoApp);
+			for(Vacuna vac : vacunasConRangoApp ) {
+				if(vac.estaVencida()) {
+					agregarVacunaVencida(vac);
 				}
 			}
-
 		}	
-		while(b.hasNext()) {
-				if(b.next().estaVencida()) {
-					if(b.next().getNombreVacuna()==null) {
-						vacunasVencidas.put(b.next().getNombreVacuna(),1);
-					}
-					else {
-						agregarVacunaVencida(b.next().getNombreVacuna());
-					}
-				}
-		}		
-			//RangoDeAplicacion rangoDeAplicacion = (RangoDeAplicacion) b.next();
-			/*for(Vacuna v : vacunas.get(b.next())) {
-				if(v.estaVencida()) {
-					if(vacunasVencidas.get(v.getNombreVacuna())==null) {
-						vacunasVencidas.put(v.getNombreVacuna(), 1);
-					}else {
-						agregarVacunaVencida(v.getNombreVacuna());
-					}
-				}
-			}*/
 	}
 
 	public void asignarVacuna(Integer dni, RangoDeAplicacion r) {
@@ -121,7 +105,7 @@ public class AlmacenVacunas {
 		for (Persona p : personas) {
 			Vacuna vacunaReservada = vacunasReservadas.get(p.getDni());
 			if (vacunaReservada.estaVencida()) {
-				agregarVacunaVencida(vacunaReservada.getNombreVacuna());
+				agregarVacunaVencida(vacunaReservada);
 				removerVacunaReservada(p.getDni());
 			} else {
 				vacunas.get(vacunaReservada.getRangoDeAplicacion()).add(vacunaReservada);
@@ -130,10 +114,9 @@ public class AlmacenVacunas {
 	}
 
 	public String getVacunaReservada(int dni) {
-		if(vacunasReservadas.containsKey(dni)) {
+		if (vacunasReservadas.containsKey(dni)) {
 			return vacunasReservadas.get(dni).getNombreVacuna();
-		}
-		else {
+		} else {
 			return "";
 		}
 	}
@@ -146,30 +129,17 @@ public class AlmacenVacunas {
 		return vacunasVencidas;
 	}
 
-	// metodo que por ahi sirve
-//	public String getVacuna(OrdenDePrioridad o) {
-//		LinkedList<Vacuna> todoPublico = vacunas.get(RangoDeAplicacion.TODO_PUBLICO);
-//		LinkedList<Vacuna> mayores60 = vacunas.get(RangoDeAplicacion.MAYOR_SESENTA);
-//		String vacuna;
-//		if (o == OrdenDePrioridad.SEGUNDO) {
-//			vacuna = mayores60.getFirst().getNombreVacuna();
-//		} else {
-//			vacuna = todoPublico.getFirst().getNombreVacuna();
-//		}
-//		return vacuna;
-//	}
-
-	// viejo
 	private boolean vacunaValida(String n) {
 		boolean ret = false;
-		if (n.equals("Pfizer") || n.equals("Moderna") || n.equals("Sputnik") || n.equals("AstraZeneca")|| n.equals("Sinopharm")) {
+		if (n.equals("Pfizer") || n.equals("Moderna") || n.equals("Sputnik") || n.equals("AstraZeneca")
+				|| n.equals("Sinopharm")) {
 			ret = true;
 		}
 		return ret;
 	}
 
 	public boolean existeVacunaConRangoDeAplicacion(RangoDeAplicacion r) {
-		return vacunas.get(r).size()>=1;
+		return vacunas.get(r).size() >= 1;
 	}
 
 }
