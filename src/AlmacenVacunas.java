@@ -1,7 +1,6 @@
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -67,6 +66,7 @@ public class AlmacenVacunas {
 
 	// cambiar nombre metodo ---!
 	private void agregarVacunaVencida(String nombreVacuna) {
+		
 		if (vacunas.containsKey(nombreVacuna)) {
 			Integer aux = vacunasVencidas.get(nombreVacuna) + 1;
 			vacunasVencidas.replace(nombreVacuna, vacunasVencidas.get(nombreVacuna), aux);
@@ -75,12 +75,34 @@ public class AlmacenVacunas {
 	}
 	
 	public void verificarVacunasVencidas() {
-		Set<RangoDeAplicacion> r = vacunas.keySet();
-		Iterator b = r.iterator();
-		
+		LinkedList <Vacuna> vacunas60 = vacunas.get(RangoDeAplicacion.MAYOR_SESENTA);
+		LinkedList <Vacuna> vacunasTodos = vacunas.get(RangoDeAplicacion.TODO_PUBLICO);
+		//Set<RangoDeAplicacion> r = vacunas.keySet();
+		Iterator<Vacuna> a = vacunas60.iterator();
+		Iterator<Vacuna> b = vacunasTodos.iterator();
+		while(a.hasNext()) {
+			if(a.next().estaVencida()) {
+				if(a.next().getNombreVacuna()==null) {
+					vacunasVencidas.put(a.next().getNombreVacuna(),1);
+				}
+				else {
+					agregarVacunaVencida(a.next().getNombreVacuna());
+				}
+			}
+
+		}	
 		while(b.hasNext()) {
-			RangoDeAplicacion rangoDeAplicacion = (RangoDeAplicacion) b.next();
-			for(Vacuna v : vacunas.get(rangoDeAplicacion)) {
+				if(b.next().estaVencida()) {
+					if(b.next().getNombreVacuna()==null) {
+						vacunasVencidas.put(b.next().getNombreVacuna(),1);
+					}
+					else {
+						agregarVacunaVencida(b.next().getNombreVacuna());
+					}
+				}
+		}		
+			//RangoDeAplicacion rangoDeAplicacion = (RangoDeAplicacion) b.next();
+			/*for(Vacuna v : vacunas.get(b.next())) {
 				if(v.estaVencida()) {
 					if(vacunasVencidas.get(v.getNombreVacuna())==null) {
 						vacunasVencidas.put(v.getNombreVacuna(), 1);
@@ -88,8 +110,7 @@ public class AlmacenVacunas {
 						agregarVacunaVencida(v.getNombreVacuna());
 					}
 				}
-			}
-		}
+			}*/
 	}
 
 	public void asignarVacuna(Integer dni, RangoDeAplicacion r) {
@@ -109,7 +130,12 @@ public class AlmacenVacunas {
 	}
 
 	public String getVacunaReservada(int dni) {
-		return vacunasReservadas.get(dni).getNombreVacuna();
+		if(vacunasReservadas.containsKey(dni)) {
+			return vacunasReservadas.get(dni).getNombreVacuna();
+		}
+		else {
+			return "";
+		}
 	}
 
 	public void removerVacunaReservada(int dni) {

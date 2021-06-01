@@ -3,6 +3,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Iterator;
 
 public class CentroVacunacion {
 
@@ -206,10 +207,12 @@ public class CentroVacunacion {
 
 	private void removerInscripto(int dni, Fecha fecha) {
 		LinkedList<Persona> personas = calendarioVacunacion.get(fecha);
-		for (Persona p : personas) {
-			if (p.getDni() == dni) {
-				personas.remove(p);
+		Iterator<Persona> p = personas.iterator(); 
+		while(p.hasNext()) {
+			if (p.next().getDni()==dni) {
+				p.remove();
 			}
+			p.hasNext();
 		}
 	}
 

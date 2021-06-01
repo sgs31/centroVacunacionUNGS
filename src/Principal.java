@@ -19,12 +19,12 @@ public class Principal {
 		centro.inscribirPersona(29223000, new Fecha(2, 5, 1982), false, true);
 		centro.inscribirPersona(13000000, new Fecha(1, 5, 1958), true, false);
 		centro.inscribirPersona(13000050, new Fecha(20, 6, 1958), false, true);
-		System.out.println(centro.getALGO3());		
+//		System.out.println(centro.getALGO3());		
 
 		centro.generarTurnos(fTurnos);
 		
 //		System.out.println(centro.getALGO());
-		System.out.println(centro.getALGO2());
+//		System.out.println(centro.getALGO2());
 		System.out.println("-------------- Turnos -------------");
 		System.out.println(centro.turnosConFecha(fTurnos));
 		System.out.println("-----------------------------------");
@@ -32,7 +32,7 @@ public class Principal {
 
 		centro.vacunarInscripto(24780201, fTurnos);
 		centro.vacunarInscripto(13000000, fTurnos);
-
+		
 		System.out.println("------------- Centro --------------");
 		System.out.println(centro);
 		System.out.println("-----------------------------------");
