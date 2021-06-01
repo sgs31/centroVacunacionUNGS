@@ -6,7 +6,7 @@ public class VacunasA3Grados extends Vacuna {
 	}
 
 	public RangoDeAplicacion getRangoDeAplicacion() {
-		if (super.getNombreVacuna().equals("sputnik")) {
+		if (super.getNombreVacuna().equals("Sputnik")) {
 			return RangoDeAplicacion.MAYOR_SESENTA;
 		} else {
 			return RangoDeAplicacion.TODO_PUBLICO;

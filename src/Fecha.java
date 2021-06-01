@@ -109,4 +109,11 @@ public class Fecha implements Comparable<Fecha> {
 		return fecha == null ? 0 : fecha.hashCode();
 	}
 
+	@Override
+	public String toString() {
+		return "Fecha [fecha=" + fecha + "]";
+	}
+	
+	
+	
 }

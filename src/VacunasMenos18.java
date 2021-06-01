@@ -6,7 +6,7 @@ public class VacunasMenos18 extends Vacuna {
 	}
 
 	public RangoDeAplicacion getRangoDeAplicacion() {
-		if (super.getNombreVacuna().equals("pfizer")) {
+		if (super.getNombreVacuna().equals("Pfizer")) {
 			return RangoDeAplicacion.MAYOR_SESENTA;
 		} else {
 			return RangoDeAplicacion.TODO_PUBLICO;
@@ -14,8 +14,9 @@ public class VacunasMenos18 extends Vacuna {
 	}
 
 	public boolean estaVencida() {
+		
 		Fecha nuevaFecha = super.getFechaIngreso();
-		if (super.getNombreVacuna().equals("pfizer")) {
+		if (super.getNombreVacuna().equals("Pfizer")) {
 			for (int i = 0; i <= 30; i++) {
 				nuevaFecha.avanzarUnDia();
 			}
@@ -25,7 +26,7 @@ public class VacunasMenos18 extends Vacuna {
 			}
 		}
 
-		return nuevaFecha.posterior(Fecha.hoy());
+		return !nuevaFecha.anterior(Fecha.hoy());
 	}
 
 }
