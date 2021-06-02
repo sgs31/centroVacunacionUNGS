@@ -60,5 +60,14 @@ public abstract class Vacuna {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "Vacuna{" +
+				"fechaIngreso=" + fechaIngreso +
+				", temperatura=" + temperatura +
+				", nombreVacuna='" + nombreVacuna + '\'' +
+				'}';
+	}
 }
 
