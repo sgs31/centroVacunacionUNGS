@@ -50,7 +50,7 @@ public class AlmacenVacunas {
 		}
 		return total;
 	}
-	
+
 	public int getVacunasDisponibles(String vacuna) {
 		int total = 0;
 		if (vacunaValida(vacuna)) {
@@ -76,39 +76,50 @@ public class AlmacenVacunas {
 	
 	private void agregarVacunaVencida(Vacuna vac) {
 		String nVac = vac.getNombreVacuna();
-		if (vacunasVencidas.get(nVac) == null) {
+		Integer cantidadVacunasVencidas = vacunasVencidas.get(nVac);
+		if (cantidadVacunasVencidas == null) {
 			vacunasVencidas.put(nVac, 1);
 		} else {
-			Integer aux = vacunasVencidas.get(nVac) + 1;
-			vacunasVencidas.replace(nVac, vacunasVencidas.get(nVac), aux);
-			vacunas.get(vac.getRangoDeAplicacion()).remove(vac);
+			Integer nuevaCantidadVacunasVencidas = cantidadVacunasVencidas + 1;
+			vacunasVencidas.replace(nVac, cantidadVacunasVencidas, nuevaCantidadVacunasVencidas);
+			//LinkedList<Vacuna> vacunasPorRangoDeAplicacion  = vacunas.get(vac.getRangoDeAplicacion());
+			//vacunasPorRangoDeAplicacion.remove(vac);
 		}
 	}
 
-	public void verificarVacunasVencidas() {
+	public void eliminarVacunasVencidas() {
 		Set<RangoDeAplicacion> r = vacunas.keySet();
 		for (RangoDeAplicacion rangoApp : r) {
 			LinkedList<Vacuna> vacunasConRangoApp = vacunas.get(rangoApp);
-			for(Vacuna vac : vacunasConRangoApp ) {
-				if(vac.estaVencida()) {
-					agregarVacunaVencida(vac);
+			Iterator<Vacuna> iteradorDeVacunas = vacunasConRangoApp.iterator();
+			while(iteradorDeVacunas.hasNext()) {
+				Vacuna vacunaAprocesar = iteradorDeVacunas.next();
+				if (vacunaAprocesar.estaVencida()) {
+					agregarVacunaVencida(vacunaAprocesar);
+					iteradorDeVacunas.remove();
 				}
 			}
 		}	
 	}
 
-	public void asignarVacuna(Integer dni, RangoDeAplicacion r) {
-		vacunasReservadas.put(dni, vacunas.get(r).removeFirst());
+	public void asignarVacuna(Integer dni, RangoDeAplicacion rangoDeAplicacion) {
+		Vacuna vacuna = vacunas.get(rangoDeAplicacion).removeFirst();
+		vacunasReservadas.put(dni, vacuna);
 	}
 
+	/*
+	* Si la vacuna asignada a la persona está vencida, la mueve al almacén de vacunas vencidas
+	* Si la vacuna no está vencida
+	* */
 	public void restaurarVacunas(LinkedList<Persona> personas) {
 		for (Persona p : personas) {
 			Vacuna vacunaReservada = vacunasReservadas.get(p.getDni());
 			if (vacunaReservada.estaVencida()) {
 				agregarVacunaVencida(vacunaReservada);
-				removerVacunaReservada(p.getDni());
+				vacunasReservadas.remove(p.getDni());
 			} else {
-				vacunas.get(vacunaReservada.getRangoDeAplicacion()).add(vacunaReservada);
+				LinkedList<Vacuna> vacunasAlmacenadas = vacunas.get(vacunaReservada.getRangoDeAplicacion());
+				vacunasAlmacenadas.add(vacunaReservada);
 			}
 		}
 	}

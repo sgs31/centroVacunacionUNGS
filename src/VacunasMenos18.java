@@ -14,19 +14,19 @@ public class VacunasMenos18 extends Vacuna {
 	}
 
 	public boolean estaVencida() {
-		
-		Fecha nuevaFecha = super.getFechaIngreso();
+		Fecha ingreso = super.getFechaIngreso();
+		Fecha fechaDeCaducidad = new Fecha(ingreso.dia(), ingreso.mes(), ingreso.anio());
 		if (super.getNombreVacuna().equals("Pfizer")) {
 			for (int i = 0; i <= 30; i++) {
-				nuevaFecha.avanzarUnDia();
-			}
-		} else {
-			for (int i = 0; i <= 60; i++) {
-				nuevaFecha.avanzarUnDia();
+				fechaDeCaducidad.avanzarUnDia();
 			}
 		}
-
-		return !nuevaFecha.anterior(Fecha.hoy());
+		if(super.getNombreVacuna().equals("Moderna")){
+			for (int i = 0; i <= 60; i++) {
+				fechaDeCaducidad.avanzarUnDia();
+			}
+		}
+		boolean ESTA_VENCIDA = fechaDeCaducidad.anterior(Fecha.hoy());
+		return ESTA_VENCIDA;
 	}
-
 }
