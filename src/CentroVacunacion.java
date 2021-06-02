@@ -9,6 +9,8 @@ public class CentroVacunacion {
 
 	private String nombreCentro;
 	private int capacidadVacunacionDiaria;
+
+	// DATOS IMPORTANTES
 	private AlmacenVacunas almacenVacunas;
 	private PersonasRegistradas personasRegistradas;
 	private Map<Fecha, LinkedList<Persona>> calendarioVacunacion;
@@ -24,6 +26,7 @@ public class CentroVacunacion {
 		this.calendarioVacunacion = new HashMap<Fecha, LinkedList<Persona>>();
 	}
 
+	// ALTA BAJA CONSULTA Y MODIFICACIONES EN EL ALMACEN DE VACUNAS
 	/**
 	 * Solo se pueden ingresar los tipos de vacunas planteados en la 1ra parte. Si
 	 * el nombre de la vacuna no coincidiera con los especificados se debe generar
@@ -50,6 +53,8 @@ public class CentroVacunacion {
 		return almacenVacunas.getVacunasDisponibles(nombreVacuna);
 	}
 
+	// OPERACIONES SOBRE EL REGISTRO DE PERSONAS PARA VACUNACION
+	// ALTA DE PERSONA EN REGISTRO, LISTA ESPERA, GENERACION TURNO
 	/**
 	 * Se inscribe una persona en lista de espera. Si la persona ya se encuentra
 	 * inscripta o es menor de 18 años, se debe generar una excepción. Si la persona
@@ -71,7 +76,7 @@ public class CentroVacunacion {
 	/**
 	 * Primero se verifica si hay turnos vencidos. En caso de haber turnos vencidos,
 	 * la persona que no asistió al turno debe ser borrada del sistema y la vacuna
-	 * reservada debe volver a estar disponible.
+	 * reservada debe volver a estar disponible. => SE AÑADE QUE LA VACUNA NO DEBE ESTAR VENCIDA TAMPOCO/
 	 *
 	 * Segundo, se deben verificar si hay vacunas vencidas y quitarlas del sistema.
 	 *
@@ -81,11 +86,14 @@ public class CentroVacunacion {
 	 * Dado que estará reservada para ser aplicada el día del turno.
 	 */
 	public void generarTurnos(Fecha fechaInicial) {
-		
+
 		Fecha fechaAux = new Fecha(fechaInicial.dia(), fechaInicial.mes(), fechaInicial.anio());
+
+		// NO SE PUEDE LLAMAR A GENERAR TURNO CON UNA FECHA ANTERIOR A LA ACTUAL
 		if (fechaAux.anterior(Fecha.hoy())) {
 			throw new RuntimeException("La fecha que ingreso es invalida.");
 		}
+
 		eliminarTurnosVencidos();
 //		almacenVacunas.verificarVacunasVencidas();
 
@@ -94,40 +102,31 @@ public class CentroVacunacion {
 		}
 
 		while (puedaAsignarTurno(OrdenDePrioridad.PRIMERO)) {
-			if (calendarioVacunacion.get(fechaAux).size() < capacidadVacunacionDiaria) {
-				Persona personaAsignado = personasRegistradas.asignarTurno(OrdenDePrioridad.PRIMERO);
-				calendarioVacunacion.get(fechaAux).add(personaAsignado);
-				almacenVacunas.asignarVacuna(personaAsignado.getDni(), personaAsignado.obtenerRangoDeAplicacion());
-			} else {
-				fechaAux.avanzarUnDia();
-				calendarioVacunacion.put(new Fecha(fechaAux.dia(), fechaAux.mes(), fechaAux.anio()), new LinkedList<Persona>());
-			}
-
+			procesarFecha(fechaAux, OrdenDePrioridad.PRIMERO);
 		}
 		while (puedaAsignarTurno(OrdenDePrioridad.SEGUNDO)) {
-			if (calendarioVacunacion.get(fechaAux).size() < capacidadVacunacionDiaria) {
-				calendarioVacunacion.get(fechaAux).add(personasRegistradas.asignarTurno(OrdenDePrioridad.SEGUNDO));
-			} else {
-				fechaAux.avanzarUnDia();
-				calendarioVacunacion.put(new Fecha(fechaAux.dia(), fechaAux.mes(), fechaAux.anio()), new LinkedList<Persona>());
-			}
+			procesarFecha(fechaAux, OrdenDePrioridad.SEGUNDO);
 		}
 		while (puedaAsignarTurno(OrdenDePrioridad.TERCERO)) {
-			if (calendarioVacunacion.get(fechaAux).size() < capacidadVacunacionDiaria) {
-				calendarioVacunacion.get(fechaAux).add(personasRegistradas.asignarTurno(OrdenDePrioridad.TERCERO));
-			} else {
-				fechaAux.avanzarUnDia();
-				calendarioVacunacion.put(new Fecha(fechaAux.dia(), fechaAux.mes(), fechaAux.anio()), new LinkedList<Persona>());
-			}
+			procesarFecha(fechaAux, OrdenDePrioridad.TERCERO);
 
 		}
 		while (puedaAsignarTurno(OrdenDePrioridad.CUARTO)) {
-			if (calendarioVacunacion.get(fechaAux).size() < capacidadVacunacionDiaria) {
-				calendarioVacunacion.get(fechaAux).add(personasRegistradas.asignarTurno(OrdenDePrioridad.CUARTO));
-			} else {
-				fechaAux.avanzarUnDia();
-				calendarioVacunacion.put(new Fecha(fechaAux.dia(), fechaAux.mes(), fechaAux.anio()), new LinkedList<Persona>());
-			}
+			procesarFecha(fechaAux, OrdenDePrioridad.CUARTO);
+		}
+	}
+
+	private void procesarFecha(Fecha fechaAux, OrdenDePrioridad prioridad) {
+		final boolean CAPACIDAD_DIARA_NO_COMPLETA = calendarioVacunacion.get(fechaAux).size() < capacidadVacunacionDiaria;
+		if (CAPACIDAD_DIARA_NO_COMPLETA) {
+			LinkedList<Persona> inscriptosRef = calendarioVacunacion.get(fechaAux);
+			Persona personaConTurnoAsignado = personasRegistradas.asignarTurno(prioridad);
+			RangoDeAplicacion rangoDeAplicacion = personaConTurnoAsignado.obtenerRangoDeAplicacion();
+			almacenVacunas.asignarVacuna(personaConTurnoAsignado.getDni(), rangoDeAplicacion);
+			inscriptosRef.add(personaConTurnoAsignado);
+		} else {
+			fechaAux.avanzarUnDia();
+			calendarioVacunacion.put(new Fecha(fechaAux.dia(), fechaAux.mes(), fechaAux.anio()), new LinkedList<Persona>());
 		}
 	}
 
@@ -152,11 +151,18 @@ public class CentroVacunacion {
 		return false;
 	}
 
+	// GESTION DE TURNOS VENCIDOS
+
 	private void eliminarTurnosVencidos() {
 		Set<Fecha> fechasVacunacion = calendarioVacunacion.keySet();
 		for (Fecha fecha : fechasVacunacion) {
+			// SI hay un in inscripto que no se vacunó ->
+			// 		sacar al inscripto del calendario de vacunacion
+			// 		la vacuna asignada si no está vencida la muevo al almacen de vacunas
 			if (calendarioVacunacion.get(fecha) != null && fecha.anterior(Fecha.hoy())) {
-				almacenVacunas.restaurarVacunas(calendarioVacunacion.get(fecha));
+				LinkedList<Persona> personasConTurnoVencido = calendarioVacunacion.get(fecha);
+				almacenVacunas.restaurarVacunas(personasConTurnoVencido);
+				// elimino los inscriptos con fechas vencidas
 				calendarioVacunacion.remove(fecha);
 			}
 		}
@@ -202,6 +208,7 @@ public class CentroVacunacion {
 		boolean inscripto = false;
 		if (calendarioVacunacion.get(fechaVacunacion) != null) {
 			LinkedList<Persona> aux = calendarioVacunacion.get(fechaVacunacion);
+			// ?? FALTA REVISAR QUE LA PERSONA EN EL ALMACEN DE VACUNA TENGA UNA VACUNA ASIGNADA ??
 			for (Persona p : aux) {
 				inscripto = inscripto || p.getDni() == dni;
 			}
@@ -211,9 +218,9 @@ public class CentroVacunacion {
 
 	private void removerInscripto(int dni, Fecha fecha) {
 		LinkedList<Persona> personas = calendarioVacunacion.get(fecha);
-		Iterator<Persona> p = personas.iterator(); 
+		Iterator<Persona> p = personas.iterator();
 		while(p.hasNext()) {
-			if (p.next().getDni()==dni) {
+			if (p.next().getDni() == dni) {
 				p.remove();
 			}
 		}

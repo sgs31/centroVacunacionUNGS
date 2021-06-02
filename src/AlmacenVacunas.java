@@ -50,7 +50,7 @@ public class AlmacenVacunas {
 		}
 		return total;
 	}
-	
+
 	public int getVacunasDisponibles(String vacuna) {
 		int total = 0;
 		if (vacunaValida(vacuna)) {
@@ -81,7 +81,8 @@ public class AlmacenVacunas {
 		} else {
 			Integer aux = vacunasVencidas.get(nVac) + 1;
 			vacunasVencidas.replace(nVac, vacunasVencidas.get(nVac), aux);
-			vacunas.get(vac.getRangoDeAplicacion()).remove(vac);
+			LinkedList<Vacuna> vacunas1  = vacunas.get(vac.getRangoDeAplicacion());
+			vacunas1.remove(vac);
 		}
 	}
 
@@ -97,16 +98,21 @@ public class AlmacenVacunas {
 		}	
 	}
 
-	public void asignarVacuna(Integer dni, RangoDeAplicacion r) {
-		vacunasReservadas.put(dni, vacunas.get(r).removeFirst());
+	public void asignarVacuna(Integer dni, RangoDeAplicacion rangoDeAplicacion) {
+		Vacuna vacuna = vacunas.get(rangoDeAplicacion).removeFirst();
+		vacunasReservadas.put(dni, vacuna);
 	}
 
+	/*
+	* Si la vacuna asignada a la persona está vencida, la mueve al almacén de vacunas vencidas
+	* Si la vacuna no está vencida
+	* */
 	public void restaurarVacunas(LinkedList<Persona> personas) {
 		for (Persona p : personas) {
 			Vacuna vacunaReservada = vacunasReservadas.get(p.getDni());
 			if (vacunaReservada.estaVencida()) {
 				agregarVacunaVencida(vacunaReservada);
-				removerVacunaReservada(p.getDni());
+				vacunasReservadas.remove(p.getDni());
 			} else {
 				vacunas.get(vacunaReservada.getRangoDeAplicacion()).add(vacunaReservada);
 			}
