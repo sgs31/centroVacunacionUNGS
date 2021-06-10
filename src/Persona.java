@@ -80,11 +80,4 @@ public class Persona {
 		return true;
 	}
 
-//	@Override
-//	public String toString() {
-//
-//		return "Persona [dni=" + dni + ", edad=" + edad + ", trabajadorSalud=" + trabajadorSalud
-//				+ ", enfermedadPreexistente=" + enfermedadPreexistente + "]";
-//	}
-
 }

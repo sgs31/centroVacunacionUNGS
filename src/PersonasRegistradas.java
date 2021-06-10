@@ -27,15 +27,10 @@ public class PersonasRegistradas {
 		}
 
 	}
-	public Map<OrdenDePrioridad,LinkedList<Persona>>getALGO3() {
-		return personasRegistradas;
-	}
-	
 	public Persona asignarTurno(OrdenDePrioridad o) {
 		return personasRegistradas.get(o).removeFirst();
 	}
 	
-
 	public List<Integer> getPersonasEnEspera() {
 		LinkedList<Integer> taux = new LinkedList<Integer>();
 		for (OrdenDePrioridad p : personasRegistradas.keySet()) {

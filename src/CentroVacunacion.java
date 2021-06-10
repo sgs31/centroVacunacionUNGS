@@ -74,7 +74,7 @@ public class CentroVacunacion {
 	 *
 	 * Segundo, se deben verificar si hay vacunas vencidas y quitarlas del sistema.
 	 *
-	 * Por �ltimo, se procede a asignar los turnos a partir de la fecha inicial
+	 * Por ultimo, se procede a asignar los turnos a partir de la fecha inicial
 	 * recibida seg�n lo especificado en la 1ra parte. Cada vez que se registra un
 	 * nuevo turno, la vacuna destinada a esa persona dejar� de estar disponible.
 	 * Dado que estar� reservada para ser aplicada el d�a del turno.

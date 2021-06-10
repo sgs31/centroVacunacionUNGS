@@ -63,11 +63,13 @@ public abstract class Vacuna {
 
 	@Override
 	public String toString() {
-		return "Vacuna{" +
+		StringBuilder sb = new StringBuilder();
+		sb.append("Vacuna{" +
 				"fechaIngreso=" + fechaIngreso +
 				", temperatura=" + temperatura +
 				", nombreVacuna='" + nombreVacuna + '\'' +
-				'}';
+				'}');
+		return sb.toString();
 	}
 }
 
